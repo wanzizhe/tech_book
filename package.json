@@ -1,0 +1,14 @@
+{
+  "name": "wanzizhe",
+  "version": "1.0.0",
+  "description": "This file file serves as your book's preface, a great place to describe your book's content and ideas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gitbook serve",
+    "build": "gitbook build ./ wanzizhe\\GitBook\\Library\\Import\\wanzizhe\\",
+    "publish": "npm run build && cd wanzizhe\\GitBook\\Library\\Import\\wanzizhe\\ && del .idea && cd .. && git add book/* && git pull && git commit -m 'pre' && git push origin master"
+  },
+  "author": "",
+  "license": "ISC"
+}
