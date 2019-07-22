@@ -2,7 +2,7 @@
 
 话不多说，先来个展示,如图：
 
-![](/CSS33D/img/rotate-cube.gif)
+![](/CSS33D/img/rotate-cube/rotate-cube.gif)
 
 是不是看起来效果还不错，哈哈，是不是有点心动想知道怎么实现的？别着急，在实现之前我们需要了解一些CSS3的基础知识。
 
@@ -10,7 +10,7 @@
 
 rotate是旋转的意思，包括rotateX（绕X轴旋转）、rotateY（绕Y轴旋转）、rotateZ（绕Z轴旋转），其中X、Y大家都应该有所理解，Z轴其实就是垂直于屏幕，直戳眼睛的方向。看一下下图可以更好地帮助你理解：
 
-![](/CSS33D/img/coordinate1.png)
+![](/CSS33D/img/rotate-cube/coordinate1.png)
 
 ###translate（位移）
 
@@ -113,12 +113,12 @@ transform-style属性是3D效果中经常使用的，其两个参数，flat以�
 通过上面对于代码的解读，对于之前涉及到的属性已经有了一定的了解，下面我们通过改变相应属性的值，看下3D效果的变化，让我们更好的理解
 
 ######1.将`perspective:1000px;`设置成`perspective:300px;`相当于我们在更近的距离去观察旋转的立方体，效果如下:
-![](/CSS33D/img/perspective.gif)
+![](/CSS33D/img/rotate-cube/perspective.gif)
 
 ######2.将`perspective-origin:50% 100px;`设置成`perspective-origin:-500px 500px;`相当于我们在X轴负方向的500px和Y轴的正方向500px的地方也就是在左下角去看这个旋转立方体，效果如下:
-![](/CSS33D/img/perspective-origin.gif)
+![](/CSS33D/img/rotate-cube/perspective-origin.gif)
 
 ######3.将`transform-style: preserve-3d;`删除掉，不设置3D透视效果，显示如下：
-![](/CSS33D/img/transform-style.gif)
+![](/CSS33D/img/rotate-cube/transform-style.gif)
 
 通过改变属性的参数进行实践，这样更好的理解了相关属性和Demo的逻辑，希望大家喜欢~
