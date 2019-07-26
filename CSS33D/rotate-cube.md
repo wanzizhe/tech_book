@@ -4,6 +4,8 @@
 
 ![](/CSS33D/img/rotate-cube/rotate-cube.gif)
 
+[详情展示点击链接](ref://./show/rotate-cube.html)
+
 是不是看起来效果还不错，哈哈，是不是有点心动想知道怎么实现的？别着急，在实现之前我们需要了解一些CSS3的基础知识。
 
 ### 1.rotate（旋转）

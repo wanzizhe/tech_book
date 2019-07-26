@@ -1,0 +1,27 @@
+{
+    "root": ".",
+    "title": "智子前端",
+    "description": "default from README",
+    "author": "f8",
+    "isbn": "ISBN",
+    "language": "zh_CN",
+    "direction": "ltr",
+    "gitbook": ">= 3.0.0 < 4.0.0",
+
+    "plugins": [ 
+        "theme-api",
+        "otherlink", 
+        "scripts",
+        "-sharing",
+        "-lunr",
+        "-search",
+        "search-pro",
+        "custom-favicon-pro"
+    ],
+    "pluginsConfig": {
+        "scripts": {
+            "files": []
+        }
+        , "favicon": "assets/favicon.ico"
+    }
+}   
