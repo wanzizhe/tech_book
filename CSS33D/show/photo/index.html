@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>旋转的照片墙</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body, html{
+            width: 100%;
+            height: 100%;
+        }
+        body{
+            position: relative;
+        }
+        #container{
+            width: 100%;
+            height: 100%;
+            background-image: url(img/bg.jpg);
+        }
+        #container .img{
+            width: 125px;
+            height: 125px;
+            border: 5px solid #fff;
+            box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
+            /* 最开始图片在最外面 */
+            position: absolute;
+            top: -500px;
+            left: -500px;
+            /* 照片飞入过度 */
+            transition: all 1s ease;
+            cursor: pointer;
+        }
+        /* span充满div */
+        #container span{
+            display: block;
+            width: 100%;
+            height: 100%;
+            /* 一开始看不见 */
+            opacity: 0;
+            transition: all 1s ease;
+        }
+         /* 左右按钮，相对于body定位 */
+        #next, #prev{
+            width: 60px;
+            height: 60px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            margin-top: -30px;
+            display: none;
+            cursor: pointer;
+        }
+        #prev{
+            background-image: url(img/prev.png);
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+        #next{
+            background-image: url(img/next.png);
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <div id="prev"></div>
+    <div id="next"></div>
+
+    <script>
+        var ROW = 4, COL = 6, NUM = ROW * COL,  
+            //缩略图的宽度和高度，为了计算空隙大小
+            THUMB_WIDTH = 125, THUMB_HEIGHT = 125,
+            //大图片宽度和高度，用来散开和合上的计算
+            BIG_WIDTH = 750, BIG_HEIGHT = 500;
+        //记录图片加载数量
+        var count = 0;
+        var oContainer = document.getElementById("container");
+        //左右按钮
+        var oPrev = document.getElementById("prev");
+        var oNext = document.getElementById("next");
+        //大图片的时候也需要获取，所以要定义在外面
+        var aImg;
+        var nowIndex = 1;//保存的当前显示的图片，取值1~24
+
+        //图片预加载
+        for(var i=0; i<NUM; i++){
+            //预加载小图
+            var oThumbImg = new Image();
+            //onload写在src前面，如果不这样可能会产生兼容性问题
+            oThumbImg.onload = function(){
+                //每加载完一张就加加
+                count++;
+                if(count == NUM * 2){
+                    //虽然大小图片加载都调用了这个函数，但是只能执行一次，谁先加载完就先执行谁
+                    loadSuccess();
+                }
+            };
+            oThumbImg.src = "img/thumbs/"+ (i + 1) +".jpg";
+
+            //预加载大图
+            var oBigImg = new Image();
+            //onload写在src前面，如果不这样可能会产生兼容性问题
+            oBigImg.onload = function(){
+                //每加载完一张就加加
+                count++;
+                if(count == NUM * 2){
+                    //虽然大小图片加载都调用了这个函数，但是只能执行一次，谁先加载完就先执行谁
+                    loadSuccess();
+                }
+            };
+            oBigImg.src = "img/"+ (i + 1) +".jpg";
+        }
+        //记录加载的图片名称
+        var index = 0;
+        var oImgWidth;
+        var oImgHeight;
+        var fColGap;
+        var fRorGap;
+        //所有图片加载完成之后执行的函数，小图作为div的背景图片，大图作为div下面的span的背景图片，所以点击之后大图的span会把小图覆盖
+        function loadSuccess(){
+            //创建24个div，背景图是小的缩略图
+            for(var i=0; i<ROW; i++){
+                for(var j=0; j<COL; j++){
+                    //记录加载的图片名称
+                    index++;
+                    var oDiv = document.createElement("div");
+                    oDiv.style.backgroundImage = "url(img/thumbs/"+ index +".jpg)";
+                    oDiv.className = "img";
+                    //在每个div中加入span
+                    oDiv.innerHTML = "<span></span>";
+                    //自定义属性是个对象，存储当前的位置
+                    oDiv.pos = {
+                        col : j,
+                        row : i
+                    };
+                    oDiv.index = index;//保存图片名称，（当前文件名字）
+                    //将动态创建好的div追加到oContainer中
+                    oContainer.appendChild(oDiv);
+                }
+            }
+
+            //获取img Dom应该在这个加载成功的函数中，要不获取不到
+            //计算空隙的大小
+            aImg = document.getElementsByClassName("img");//24个div
+            //图片的宽
+            oImgWidth = aImg[0].offsetWidth;
+            //图片的高
+            oImgHeight = aImg[0].offsetHeight;
+            //计算列空隙
+            fColGap = (oContainer.offsetWidth -  oImgWidth * COL) / (COL + 1);
+            //计算行空隙
+            fRorGap = (oContainer.offsetHeight - oImgHeight * ROW) / (ROW + 1);
+            //计算每一个图片定位，一个一个飞入
+            for(var i=23; i >= 0; i--){
+                //延迟时间逆序
+                aImg[i].style.transitionDelay = (NUM - i) * 100 + "ms";
+                //计算每一个图片的位置
+                aImg[i].style.top = (fRorGap + oImgHeight) * aImg[i].pos.row + fRorGap + "px";
+                aImg[i].style.left = (fColGap + oImgWidth) * aImg[i].pos.col + fColGap + "px";
+                //每张图片的旋转角度，旋转角度为正负20°
+                aImg[i].style.transform = "rotate("+ (Math.random() * 40 - 20) +"deg)";
+            }
+        }
+
+        //合上之后大图片两边的宽度
+        var fBigRowGap = (oContainer.offsetHeight - BIG_HEIGHT) / 2;
+        var fBigColGap = (oContainer.offsetWidth - BIG_WIDTH) / 2;
+        var bFlag = true;//标志位，true表示当前是散开的要合上，false表示当前是合上的要散开
+        //把小图片的点击事件委托给container绑定
+        oContainer.onclick = function(e){
+            //通过判断是this还是事件源来判断点击的是图片还是其他地方
+            if(this === e.target){//e.target = oContainer或div或span    this是oContainer
+                //点击空的时候，就是什么都不干
+                return false;
+            }
+            //散开要合上
+            if(bFlag){
+                for(var i=0; i<aImg.length; i++){
+                    //大图片每一个图片的位置
+                    aImg[i].style.top = fBigRowGap + THUMB_HEIGHT * aImg[i].pos.row + "px";
+                    aImg[i].style.left = fBigColGap + THUMB_WIDTH * aImg[i].pos.col + "px";
+                    //合成大图片之后的一些样式改变
+                    aImg[i].style.transform = "rotate(0)";
+                    aImg[i].style.borderWidth = "1px";
+                    aImg[i].style.transitionDelay = "0ms";
+
+                    //找到每一个div下面的span
+                    var oSpan = aImg[i].getElementsByTagName("span")[0];
+                    oSpan.style.opacity = 1;
+                    var imgURL;
+                    if(e.target.className == "img"){//div 点击图片边框的时候
+                        imgURL = e.target.index;
+                    }else{//span  点击图片的时候
+                        imgURL = e.target.parentNode.index;//img父元素的index
+                    }
+                    oSpan.style.backgroundImage = "url(img/"+ imgURL +".jpg)";
+                    //给每一个span这是背景图片定位
+                    oSpan.style.backgroundPosition = -THUMB_WIDTH * aImg[i].pos.col + "px "+ (-THUMB_HEIGHT * aImg[i].pos.row) +"px";
+                    //在点击span的时候要去掉延迟，只有点击左右的是才有
+                    oSpan.style.transitionDelay = "0ms";
+
+                    nowIndex = imgURL;// 取值1~24
+                }
+                //照片合上的时候显示按钮
+                oPrev.style.display = oNext.style.display = "block";
+            }else{
+                //合上到散开
+                for(var i=0; i<NUM; i++){
+                    //散开到原来位置
+                    aImg[i].style.top = (fRorGap + oImgHeight) * aImg[i].pos.row + fRorGap + "px";
+                    aImg[i].style.left = (fColGap + oImgWidth) * aImg[i].pos.col + fColGap + "px";
+                    //散开的样式
+                    aImg[i].style.transform = "rotate("+ (Math.random() * 40 - 20) +"deg)";
+                    aImg[i].style.borderWidth = "5px";
+                    var oSpan = aImg[i].getElementsByTagName("span")[0];
+                    oSpan.style.opacity = 0;
+                    oSpan.style.transitionDelay = "0ms";
+                }
+                //散开的时候按钮消失
+                oPrev.style.display = oNext.style.display = "none";
+            }
+            bFlag = !bFlag;
+        };
+
+        //点击左右按钮切换图片，要知道当前是哪张图片
+        oPrev.onclick = oNext.onclick = function(){
+            if(this === oNext){
+                nowIndex++;
+                if(nowIndex == NUM + 1){
+                    nowIndex = 1;
+                }
+            }else{
+                nowIndex--;
+                if(nowIndex == 0){
+                    nowIndex = NUM;
+                }
+            }
+            //创建一个新的数组，然后进行相应的操作
+            var arr = [];//0~23
+            for(var i=0; i<NUM; i++){
+                arr.push(i);
+            }
+            //随机排序的数组
+            arr.sort(function(a, b){
+                return Math.random() - 0.5;
+            });
+            //将每一个span都切换成相应图片
+            for(var i=0; i<arr.length; i++){
+                //每一个img下的span
+                var oSpan = aImg[arr[i]].getElementsByTagName("span")[0];
+                //i+1s是为了防止第一个一秒都不等
+                oSpan.style.transitionDelay = (i + 1) * 50 + "ms";
+                oSpan.style.backgroundImage = "url(img/"+ nowIndex +".jpg)";
+            }
+        };
+    </script>
+</body>
+</html>
