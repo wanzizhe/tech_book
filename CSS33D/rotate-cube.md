@@ -124,3 +124,6 @@ transform-style属性是3D效果中经常使用的，其两个参数，flat以�
 ![](/CSS33D/img/rotate-cube/transform-style.gif)
 
 通过改变属性的参数进行实践，这样更好的理解了相关属性和Demo的逻辑，希望大家喜欢~
+
+19.7.30日更新：
+红梅姐的提问给了我一些想法记录在这里吧，`transform-style: preserve-3d;`这个属性是什么意思，经过一些属性的尝试设置之后发现，如果没有设置`transform-style: preserve-3d;`属性，动画中的相关`transform`操作就不能显示出3D的效果，但是如果动画中的变换和`transform`无关的情况下，设置不设置`transform-style: preserve-3d;`属性并没有什么关系，这也是为什么这个属性要取名叫`transform-style`的原因吧。
